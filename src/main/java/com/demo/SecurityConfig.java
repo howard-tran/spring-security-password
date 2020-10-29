@@ -15,43 +15,54 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+  private final PasswordEncoder passwordEncoder;
 
-  private final PasswordEncoder passwordEncoder; 
-  
   @Autowired
   public SecurityConfig(PasswordEncoder passwordEncoder) {
-    this.passwordEncoder = passwordEncoder; 
+    this.passwordEncoder = passwordEncoder;
   }
-  
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
       .antMatchers("/", "/index.html")
       .permitAll()
-      .antMatchers("http://larryjason.com:8081/api/user/find?searchkey=a")
-      .permitAll()
+      .antMatchers("/api/user/**")
+      .hasRole(UserRole.NORMAL_USER.toString())
+      .antMatchers("/api/course/**")
+      .hasRole(UserRole.ADMIN.toString())
       .anyRequest()
       .authenticated()
       .and()
-      .httpBasic(); 
+      .formLogin()
+      .permitAll()
+      .and()
+      .logout()
+      .permitAll()
+      .and()
+      .csrf()
+      .disable()
+      .httpBasic();
   }
 
   @Override
   @Bean
   protected UserDetailsService userDetailsService() {
-    UserDetails user = User.builder()
+    UserDetails user = User
+      .builder()
       .username("ad")
       .password(this.passwordEncoder.encode("123"))
       .roles(UserRole.NORMAL_USER.toString())
       .build();
 
-    UserDetails myWife = User.builder()
+    UserDetails myWife = User
+      .builder()
       .username("wife")
       .password(this.passwordEncoder.encode("123"))
       .roles(UserRole.ADMIN.toString())
       .build();
-    
-      return new InMemoryUserDetailsManager(user, myWife);
+
+    return new InMemoryUserDetailsManager(user, myWife);
   }
 }

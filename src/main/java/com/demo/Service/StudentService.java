@@ -7,18 +7,22 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StudentService {
-  private IStudent studentRespository;
+  private IStudent studentRepository;
+
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
   public StudentService(
-    @Qualifier("FakePersonRepository") IStudent personRespository
+    @Qualifier("FakePersonRepository") IStudent personRespository,
+    PasswordEncoder passwordEncoder
   ) {
-    this.studentRespository = personRespository;
+    this.studentRepository = personRespository;
+    this.passwordEncoder = passwordEncoder; 
   }
 
   public Optional<Boolean> AddStudent(Student person) {
@@ -27,27 +31,40 @@ public class StudentService {
     }
     person.setId(UUID.randomUUID().toString());
 
-    this.studentRespository.AddStudent(person);
+    this.studentRepository.AddStudent(person);
     return Optional.of(true);
   }
 
   public Optional<List<Student>> GetAll() {
-    return Optional.of(this.studentRespository.GetAllStudent());
+    List<Student> res = this.studentRepository.GetAllStudent();
+    for (Student student : res) {
+      student.setPassword(this.passwordEncoder.encode(student.getPassword()));
+    }
+    return Optional.of(res);
   }
 
   public Optional<Boolean> CheckAvailableStudent(String username) {
     return Optional.of(
-      (this.studentRespository.GetStudentByUsername(username) != null)
+      (this.studentRepository.GetStudentByUsername(username) != null)
     );
   }
 
   public Optional<Student> GetStudentByUsername(String username) {
-    return Optional.ofNullable(
-      this.studentRespository.GetStudentByUsername(username)
-    );
+    Student student = this.studentRepository.GetStudentByUsername(username); 
+
+    if (student == null) {
+      return Optional.empty(); 
+    }
+    student.setPassword(this.passwordEncoder.encode(student.getPassword()));
+
+    return Optional.of(student); 
   }
 
   public Optional<List<Student>> FindStudent(String searchKey) {
-    return Optional.ofNullable(this.studentRespository.SearchStudent(searchKey));
+    List<Student> res = this.studentRepository.SearchStudent(searchKey);
+    for (Student student : res) {
+      student.setPassword(this.passwordEncoder.encode(student.getPassword()));
+    }
+    return Optional.of(res);
   }
 }

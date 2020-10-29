@@ -1,9 +1,7 @@
 package com.demo.Model;
 
 import java.util.List;
-
 import javax.validation.constraints.NotBlank;
-
 
 public class Course {
   private String id;
@@ -12,10 +10,14 @@ public class Course {
   private String username;
 
   @NotBlank
-  private List<String> courses; 
+  private List<String> courses;
 
-  public Course() {
-    
+  public Course() {}
+
+  public Course(String id, String username, List<String> courses) {
+    this.id = id;
+    this.username = username;
+    this.courses = courses;
   }
 
   public Course(String username, List<String> courses) {
@@ -46,5 +48,4 @@ public class Course {
   public void setCourses(List<String> courses) {
     this.courses = courses;
   }
-  
 }

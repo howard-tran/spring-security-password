@@ -1,13 +1,12 @@
 package com;
 
 public interface parent {
-  void hello(); 
+  void hello();
 }
 
 public class A implements parent {
-  A() {
 
-  }
+  A() {}
 
   @Override
   public void hello() {
@@ -16,10 +15,9 @@ public class A implements parent {
 }
 
 public class B implements parent {
-  B() {
 
-  }
-  
+  B() {}
+
   @Override
   public void hello() {
     System.out.print("B");
@@ -30,7 +28,7 @@ public class App {
   A dev;
 
   App() {
-    dev = new A(); 
+    dev = new A();
   }
 
   void mainFunc() {
@@ -39,9 +37,9 @@ public class App {
 }
 
 public class Main {
+
   public static void main(String[] args) {
     App app = new App();
     app.mainFunc();
   }
 }
-

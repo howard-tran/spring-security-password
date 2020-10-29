@@ -13,9 +13,19 @@ public class Student {
 
   public Student() {}
 
+  public Student(String id, String username, String password) {
+    this.id = id;
+    this.username = username;
+    this.password = password;
+  }
+
   public Student(String username, String password) {
     this.username = username;
     this.password = password;
+  }
+
+  public Student(String username) {
+    this.username = username;
   }
 
   public String getId() {

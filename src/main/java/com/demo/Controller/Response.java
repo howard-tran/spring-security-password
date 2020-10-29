@@ -12,7 +12,7 @@ public class Response<T> {
     this.setError(error);
     this.setMessage(message);
   }
-  
+
   public Response(T data, ErrorType t) {
     switch (t) {
       case OK:

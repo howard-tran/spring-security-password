@@ -2,10 +2,7 @@ package com.demo.Controller;
 
 import com.demo.Model.Student;
 import com.demo.Service.StudentService;
-import java.util.Optional;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,7 +67,7 @@ public class StudentController {
       return new Response<Object>("no-special-character", ErrorType.OK);
     }
     return new Response<Object>(
-      this.studentService.FindStudent(searchKey),
+      this.studentService.FindStudent(searchKey).get(),
       ErrorType.OK
     );
   }
